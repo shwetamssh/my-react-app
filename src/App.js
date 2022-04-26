@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import ReactDOM from 'react-dom/client';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const JSON_STRINGIFY_INDENT = 2;
+const e = React.createElement;
+
+class EventCaller extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { eventBody: '' };
+  }
+
+  componentDidMount() {
+    this.GetEvent();
+  }
+
+  GetEvent() {
+      fetch(this.props.endpoint)
+      .then(response => {
+        return response.json();
+      })
+      .then(responseBody => {
+          this.setState({ eventBody: JSON.stringify(responseBody, null, JSON_STRINGIFY_INDENT)});
+      });
+  }
+
+  render() {
+    let eventBody = this.state.eventBody;
+    return (
+      <div id="event-body-text">
+        <h2>Event Body Will Be Output Below</h2>
+        <pre>
+          { eventBody }
+        </pre>
+      </div>
+    );
+  }
 }
-
-export default App;

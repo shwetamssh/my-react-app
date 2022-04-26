@@ -1,17 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+const JSON_STRINGIFY_INDENT = 2;
+const e = React.createElement;
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
+class EventCaller extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { eventBody: '' };
+  }
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+  componentDidMount() {
+    this.GetEvent();
+  }
+
+  GetEvent() {
+      fetch(this.props.endpoint)
+      .then(response => {
+        return response.json();
+      })
+      .then(responseBody => {
+          this.setState({ eventBody: JSON.stringify(responseBody, null, JSON_STRINGIFY_INDENT)});
+      });
+  }
+
+  render() {
+    let eventBody = this.state.eventBody;
+    return (
+      <div id="event-body-text">
+        <h2>Event Body Will Be Output Below</h2>
+        <pre>
+          { eventBody }
+        </pre>
+      </div>
+    );
+  }
+}
